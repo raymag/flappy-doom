@@ -8,6 +8,7 @@ class Bird(pygame.sprite.Sprite):
         super().__init__(game.all_sprites_group)
         self.game = game
         self.image = game.bird_images[0]
+        self.mask = pygame.mask.from_surface(game.bird_mask_image)
         self.rect = self.image.get_rect()
         self.rect.center = BIRD_POS
 
@@ -20,7 +21,12 @@ class Bird(pygame.sprite.Sprite):
         self.angle = 0
 
     def check_collision(self):
-        hit = pygame.sprite.spritecollide(self, self.game.pipe_group, dokill=False)
+        hit = pygame.sprite.spritecollide(
+            self,
+            self.game.pipe_group,
+            dokill=False,
+            collided=pygame.sprite.collide_mask,
+        )
         if (
             hit
             or self.rect.bottom > GROUND_Y
@@ -37,6 +43,9 @@ class Bird(pygame.sprite.Sprite):
             else:
                 self.angle = max(-2.5 * self.falling_velocity, -90)
             self.image = pygame.transform.rotate(self.image, self.angle)
+            # new mask
+            mask_image = pygame.transform.rotate(self.game.bird_mask_image, self.angle)
+            self.mask = pygame.mask.from_surface(mask_image)
 
     def jump(self):
         self.game.sound.wing_sound.play()

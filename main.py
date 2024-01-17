@@ -13,6 +13,7 @@ class FlappyDoom:
         self.clock = pygame.time.Clock()
         self.load_assets()
         self.sound = Sound()
+        self.score = Score(self)
         self.new_game()
 
     def load_assets(self):
@@ -30,6 +31,16 @@ class FlappyDoom:
         self.bird_images = [
             pygame.transform.scale(sprite, bird_size) for sprite in self.bird_images
         ]
+        # bird mask
+        self.bird_mask_image = pygame.image.load("assets/bird/mask.png").convert_alpha()
+        bird_mask_size = (
+            bird_image.get_width() * BIRD_SCALE,
+            bird_image.get_height() * BIRD_SCALE,
+        )
+        self.bird_mask_image = pygame.transform.scale(
+            self.bird_mask_image, bird_mask_size
+        )
+
         # background
         self.background_image = pygame.image.load("assets/images/bg.png").convert()
         self.background_image = pygame.transform.scale(self.background_image, RES)
@@ -59,8 +70,11 @@ class FlappyDoom:
         self.background.draw()
         self.all_sprites_group.draw(self.screen)
         self.ground.draw()
+        self.score.draw()
 
-        pygame.draw.rect(self.screen, "yellow", self.bird.rect, 4)
+        # self.bird.mask.to_surface(
+        #     self.screen, unsetcolor=None, dest=self.bird.rect, setcolor="purple"
+        # )
         pygame.display.flip()
 
     def update(self):

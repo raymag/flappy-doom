@@ -2,6 +2,18 @@ import pygame
 from settings import *
 
 
+class Score:
+    def __init__(self, game):
+        self.game = game
+        self.font = pygame.font.Font("assets/font/doom.ttf", 150)
+        self.font_pos = WIDTH // 2, HEIGHT / 8
+
+    def draw(self):
+        score = self.game.pipe_handler.passed_pipes
+        text = self.font.render(f"{score}", True, "white")
+        self.game.screen.blit(text, self.font_pos)
+
+
 class Sound:
     def __init__(self):
         self.hit_sound = pygame.mixer.Sound("assets/sound/hit.wav")
